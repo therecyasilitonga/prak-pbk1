@@ -1,43 +1,69 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps({
-  msg: String,
-})
+const name = ref('')
+const serviceType = ref('Wedding')
+const submitted = ref(false)
 
 const count = ref(0)
+
+function submitForm() {
+  submitted.value = true
+}
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
+  <!-- Declarative Rendering -->
+  <h1>Pendaftaran Make-Up Artist</h1>
 
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>BIODATA DIRI</p>
-    <P>NAMA: THERECYA SILITONGA</P>
-    <P>NPM: 233510300</P>
-    <P>KELAS: 4D</P>
+  <!-- Form Bindings -->
+  <form @submit.prevent="submitForm">
+    <label>Nama:</label>
+    <input type="text" v-model="name" placeholder="Masukkan nama Anda" />
+
+    <label>Jenis Layanan:</label>
+    <select v-model="serviceType">
+      <option>Wedding</option>
+      <option>Photoshoot</option>
+      <option>Graduation</option>
+    </select>
+
+    <!-- Event Listener -->
+    <button type="submit">Kirim</button>
+  </form>
+
+  <!-- Conditional Rendering -->
+  <div v-if="submitted">
+    <h2>Data Pendaftaran:</h2>
+    <p>Nama: {{ name }}</p>
+    <p>Layanan: {{ serviceType }}</p>
+    <p>Status: ✅ Terkonfirmasi</p>
   </div>
 
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Learn more about IDE Support for Vue in the
-    <a
-      href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support"
-      target="_blank"
-      >Vue Docs Scaling up Guide</a
-    >.
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+  <!-- Attribute Binding -->
+  <img :src="serviceType === 'Wedding' ? 'wedding.jpg' : 'default.jpg'" alt="Jenis layanan" width="150" />
+
+  <!-- Counter Event Listener -->
+  <div class="card">
+    <button @click="count++">Klik saya ({{ count }})</button>
+  </div>
+
+  <!-- Biodata MUA -->
+  <p>BIODATA MUA:</p>
+  <p>NAMA: THERECYA SILITONGA</p>
+  <p>NPM: 233510300</p>
+  <p>KELAS: 4D</p>
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+form {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card {
+  margin-top: 1rem;
 }
 </style>
