@@ -1,69 +1,119 @@
-<script setup>
-import { ref } from 'vue'
+<template>
+  <div class="container">
+    <h1>Booking Make-up</h1>
 
-const name = ref('')
-const serviceType = ref('Wedding')
-const submitted = ref(false)
+    <!-- Form Bindings -->
+    <form @submit.prevent="submitBooking">
+      <input v-model="name" type="text" placeholder="Nama Customer" required />
+      <select v-model="selectedService" required>
+        <option disabled value="">Pilih Layanan</option>
+        <option v-for="(service, i) in services" :key="i">{{ service.title }}</option>
+      </select>
+      <button type="submit">Booking</button>
+    </form>
 
-const count = ref(0)
+    <!-- Conditional Rendering -->
+    <p v-if="bookings.length === 0">Belum ada booking yang masuk.</p>
 
-function submitForm() {
-  submitted.value = true
+    <!-- Declarative Rendering -->
+    <ul v-else>
+      <li v-for="(b, i) in bookings" :key="i">
+        {{ b.name }} memesan layanan <strong>{{ b.service }}</strong>
+      </li>
+    </ul>
+
+    <h2>Layanan MUA</h2>
+    <div class="gallery">
+      <div class="card" v-for="(service, i) in services" :key="i">
+        <!-- Attribute Bindings -->
+        <img :src="service.img" :alt="service.title" @click="showAlert(service)" />
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      name: '',
+      selectedService: '',
+      bookings: [],
+      services: [
+        {
+          title: 'Wedding Make-up',
+          img: '/src/assets/wedding.jpg',
+          description: 'Make-up untuk acara pernikahan'
+        },
+        {
+          title: 'Photoshoot Make-up',
+          img: '/src/assets/photoshoot.jpg',
+          description: 'Make-up untuk sesi foto profesional'
+        },
+        {
+          title: 'Therecya Silitonga',
+          img: '/src/assets/theresya.jpg',
+          description: '233510300'
+        }
+      ]
+    }
+  },
+  methods: {
+    submitBooking() {
+      this.bookings.push({
+        name: this.name,
+        service: this.selectedService
+      })
+      this.name = ''
+      this.selectedService = ''
+    },
+    showAlert(service) {
+      alert(`Detail Layanan: ${service.title}\n${service.description}`)
+    }
+  }
 }
 </script>
 
-<template>
-  <!-- Declarative Rendering -->
-  <h1>Pendaftaran Make-Up Artist</h1>
-
-  <!-- Form Bindings -->
-  <form @submit.prevent="submitForm">
-    <label>Nama:</label>
-    <input type="text" v-model="name" placeholder="Masukkan nama Anda" />
-
-    <label>Jenis Layanan:</label>
-    <select v-model="serviceType">
-      <option>Wedding</option>
-      <option>Photoshoot</option>
-      <option>Graduation</option>
-    </select>
-
-    <!-- Event Listener -->
-    <button type="submit">Kirim</button>
-  </form>
-
-  <!-- Conditional Rendering -->
-  <div v-if="submitted">
-    <h2>Data Pendaftaran:</h2>
-    <p>Nama: {{ name }}</p>
-    <p>Layanan: {{ serviceType }}</p>
-    <p>Status: ✅ Terkonfirmasi</p>
-  </div>
-
-  <!-- Attribute Binding -->
-  <img :src="serviceType === 'Wedding' ? 'wedding.jpg' : 'default.jpg'" alt="Jenis layanan" width="150" />
-
-  <!-- Counter Event Listener -->
-  <div class="card">
-    <button @click="count++">Klik saya ({{ count }})</button>
-  </div>
-
-  <!-- Biodata MUA -->
-  <p>BIODATA MUA:</p>
-  <p>NAMA: THERECYA SILITONGA</p>
-  <p>NPM: 233510300</p>
-  <p>KELAS: 4D</p>
-</template>
-
 <style scoped>
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
 form {
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
+}
+
+input, select {
+  padding: 8px;
+  margin: 5px;
+  width: 200px;
+}
+
+button {
+  padding: 8px 16px;
+}
+
+.gallery {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .card {
-  margin-top: 1rem;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 220px;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
 }
 </style>
