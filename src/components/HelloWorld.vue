@@ -1,32 +1,29 @@
 <template>
   <div class="container">
-    <h1>Booking Make-up</h1>
+    <h1>Booking Make-Up</h1>
 
-    <!-- Form Bindings -->
-    <form @submit.prevent="submitBooking">
-      <input v-model="name" type="text" placeholder="Nama Customer" required />
-      <select v-model="selectedService" required>
+    <div class="form">
+      <input v-model="name" placeholder="Nama Customer" />
+      <select v-model="selectedService">
         <option disabled value="">Pilih Layanan</option>
-        <option v-for="(service, i) in services" :key="i">{{ service.title }}</option>
+        <option v-for="(service, index) in services" :key="index" :value="service.title">
+          {{ service.title }}
+        </option>
       </select>
-      <button type="submit">Booking</button>
-    </form>
+      <button @click="book">Booking</button>
+    </div>
 
-    <!-- Conditional Rendering -->
     <p v-if="bookings.length === 0">Belum ada booking yang masuk.</p>
-
-    <!-- Declarative Rendering -->
     <ul v-else>
-      <li v-for="(b, i) in bookings" :key="i">
-        {{ b.name }} memesan layanan <strong>{{ b.service }}</strong>
+      <li v-for="(booking, index) in bookings" :key="index">
+        {{ booking.name }} memesan layanan {{ booking.service }}
       </li>
     </ul>
 
     <h2>Layanan MUA</h2>
-    <div class="gallery">
-      <div class="card" v-for="(service, i) in services" :key="i">
-        <!-- Attribute Bindings -->
-        <img :src="service.img" :alt="service.title" @click="showAlert(service)" />
+    <div class="cards">
+      <div v-for="(service, index) in services" :key="index" class="card">
+        <img :src="service.img" :alt="service.title" />
         <h3>{{ service.title }}</h3>
         <p>{{ service.description }}</p>
       </div>
@@ -44,76 +41,78 @@ export default {
       services: [
         {
           title: 'Wedding Make-up',
-          img: '/src/assets/wedding.jpg',
-          description: 'Make-up untuk acara pernikahan'
+          img: '/images/wedding.jpg',
+          description: 'Make-up untuk acara pernikahan',
         },
         {
           title: 'Photoshoot Make-up',
-          img: '/src/assets/photoshoot.jpg',
-          description: 'Make-up untuk sesi foto profesional'
+          img: '/images/photoshoot.jpg',
+          description: 'Make-up untuk sesi foto profesional',
         },
         {
           title: 'Therecya Silitonga',
-          img: '/src/assets/theresya.jpg',
-          description: '233510300'
-        }
-      ]
-    }
+          img: '/images/theresya.jpg',
+          description: '233510300',
+        },
+      ],
+    };
   },
   methods: {
-    submitBooking() {
-      this.bookings.push({
-        name: this.name,
-        service: this.selectedService
-      })
-      this.name = ''
-      this.selectedService = ''
+    book() {
+      if (this.name && this.selectedService) {
+        this.bookings.push({ name: this.name, service: this.selectedService });
+        this.name = '';
+        this.selectedService = '';
+      } else {
+        alert('Lengkapi form terlebih dahulu.');
+      }
     },
-    showAlert(service) {
-      alert(`Detail Layanan: ${service.title}\n${service.description}`)
-    }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
 .container {
   max-width: 800px;
   margin: auto;
-  padding: 20px;
+  padding: 2rem;
+  color: white;
   text-align: center;
+  background-color: #121212;
 }
-
-form {
-  margin-bottom: 20px;
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
-
 input, select {
-  padding: 8px;
-  margin: 5px;
+  padding: 0.5rem;
+}
+button {
+  padding: 0.5rem 1rem;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+.card {
+  background: #1e1e1e;
+  padding: 1rem;
+  border: 1px solid #444;
+  border-radius: 10px;
   width: 200px;
 }
-
-button {
-  padding: 8px 16px;
-}
-
-.gallery {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 220px;
-}
-
 .card img {
   width: 100%;
   height: auto;
-  cursor: pointer;
+  border-radius: 5px;
 }
 </style>
